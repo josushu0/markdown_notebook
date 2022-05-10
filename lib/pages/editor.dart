@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class EditorPage extends StatefulWidget {
   const EditorPage({Key? key}) : super(key: key);
@@ -28,7 +29,73 @@ class _EditorPageState extends State<EditorPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Editor"),
+        title: const Text("Editor Markdown"),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.add_circle,
+                      color: Colors.black,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Text("Nuevo"),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.save,
+                      color: Colors.black,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Text("Guardar"),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.save_as,
+                      color: Colors.black,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Text("Guardar como..."),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.file_open,
+                      color: Colors.black,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Text("Abrir"),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
         bottom: TabBar(controller: tabController, tabs: const [
           Tab(
             child: Icon(Icons.edit),
@@ -47,8 +114,7 @@ class _EditorPageState extends State<EditorPage>
             keyboardType: TextInputType.multiline,
             controller: textEditingController,
             decoration: const InputDecoration(
-              border: InputBorder.none,
-            ),
+                border: InputBorder.none, hintText: "Escriba algo..."),
             onChanged: (String text) {
               setState(() {
                 this.text = text;
@@ -56,7 +122,14 @@ class _EditorPageState extends State<EditorPage>
             },
           ),
         ),
-        Markdown(data: text),
+        Markdown(
+          data: text,
+          extensionSet: md.ExtensionSet(
+              md.ExtensionSet.gitHubFlavored.blockSyntaxes, [
+            md.EmojiSyntax(),
+            ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes
+          ]),
+        ),
       ]),
     );
   }
